@@ -9,6 +9,10 @@ So, testing the newly created file:
 
   mbdyn airfoil.mbd -o DEL
   
-  cat DEL.jnt |grep "       1"|awk {'print $16, $3'}|feedgnuplot --domain
+  for lift coefficient:  cat DEL.aer |grep "       1"|awk {'print $2, $5'}|feedgnuplot --domain
+  
+  for drag coefficient:  cat DEL.aer |grep "       1"|awk {'print $2, $6'}|feedgnuplot --domain
+  
+  for moment coefficient:  cat DEL.aer |grep "       1"|awk {'print $2, $7'}|feedgnuplot --domain
 
 2.
