@@ -1,0 +1,98 @@
+# $Header: /var/cvs/mbdyn/mbdyn/mbdyn-web/documentation/examples/rigidbody,v 1.6 2009/07/04 17:36:08 masarati Exp $
+# modified example case to allow testing of airfoil aerodynamic properties
+
+begin: data;
+	problem: initial value; # the default
+end: data;
+
+set: const integer GROUND = 0;
+set: integer AERO_INTEGRATION_POINTS = 1;
+set: const real SPAN = 0.8; # m
+set: const real CHORD = 0.15; # m; estimated
+set: const integer NACA0012 = 12;
+c81 data: NACA0012, "naca0012.c81";
+
+begin: initial value;
+	initial time: 0.;
+	final time: 10.;
+	time step: 1.e-3;
+
+	max iterations: 10;
+	tolerance: 1.e-6;
+
+	derivatives coefficient: 1.e-6;
+end: initial value;
+
+begin: control data;
+	output results: netcdf;
+	structural nodes: 2;
+#	rigid bodies: 1;
+	aerodynamic elements: 1;
+	air properties;
+	joints: 2;
+end: control data;
+
+reference: GROUND,
+	reference, global, null,
+	reference, global, eye,
+	reference, global, null,
+	reference, global, null;
+
+begin: nodes;
+	# in zero, with horizontal speed
+	structural: 1,
+		dynamic,
+		null,
+		euler, 0, 0*5./180.*pi, 0,
+		0.,0.,0.,
+		null; 
+		
+	structural: GROUND, static,
+		reference, GROUND, null,
+		reference, GROUND, eye,
+		reference, GROUND, null,
+		reference, GROUND, null;
+end: nodes;
+
+begin: elements;
+#	body: 1, 1, 1., null, eye;
+
+	joint: GROUND, clamp, GROUND, node, node;
+
+
+	joint: 1, axial rotation,  # drum rotation
+	 GROUND,
+	 position, null,
+	orientation, 
+		3, 0., 0., 1.,
+		1, 1., 0., 0.,
+	 1,
+	 position, null,
+	orientation, 
+		3, 0., 0., 1.,
+		1, 1., 0., 0.,
+	const, 8.; # ang. vel.
+
+aerodynamic body: 1,
+	1,
+	reference, node,
+	0., 0., 0.,
+	reference, node,
+		1, 1., 0., 0.,
+		2, 0., 1., 0.,
+	SPAN,
+	const, CHORD,	# chord
+	const, CHORD/4,	# aero center (approx)
+	const, CHORD*0,	# b c point
+	const, 0.,	# twist
+#	 tip loss, const, 0.95,
+	AERO_INTEGRATION_POINTS,
+	# theodorsen,
+		c81, NACA0012,
+	jacobian, no;
+
+	air properties:
+		 1.204, 343.,
+		1.0, 0., 0., const, 20.; # air velocity
+end: elements;
+
