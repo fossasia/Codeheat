@@ -1,0 +1,7 @@
+Layers 1 & 2: revolute hinge
+Layers 3 & 4: sperical hinge
+Layers 5 & 6: cardano hinge
+Layers 7 & 8: in line joint
+Layer 11:    camera and light
+Layer 12:    spare parts
+
