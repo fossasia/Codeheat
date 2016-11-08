@@ -1,4 +1,6 @@
-The airfoil data files contained in this directory were released along with the Cactus code (http://cactuscode.org/) and thus the original license is copied below for reference.
+The airfoil data files contained in this directory were released along 
+with the Cactus code (http://cactuscode.org/) and thus the original 
+license is copied below for reference.
 
 Copyright (c) 2013, Sandia Corporation.  Under the terms of Contract
 DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government retains
