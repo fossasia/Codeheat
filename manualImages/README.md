@@ -11,6 +11,6 @@ Task description for the creation of new images for the MBDyn manual and/or webs
 
 4. render the element in png, regenerate the color palette to use 256 colors (GIMP recommended [Menu: Image->Mode->Indexed]), trim the image to remove any white borders (GIMP recommended [Menu: Image->Autotrim])
 
-5. convert the modified generated png into an eps3 file using the following command: convert yourFile.png eps3:yourFile.eps
+5. convert the modified generated png into an eps3 file using the following command: `convert yourFile.png eps3:yourFile.eps`
 
 6. submit the generated files: yourFile.blend, yourFile.png, and yourFile.eps; the eps and png should not exceed 100k each
