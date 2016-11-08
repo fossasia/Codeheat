@@ -3,7 +3,7 @@ repository of c81 airfoil data to use with MBDyn or similar software
 
 The following procedure is suggested for simplicity but by no means required; you can have your own testing procedure for the newly created airfoil data file.
 
-You can generate the data using the software of your choice or, for simplicity, get the data from the cactus released airfoil data for NACA0015, 18, and 21 airfoils in the cactusImport subdirectory.
+You can generate the data using the software of your choice or, for simplicity, get the data from the cactus released airfoil data for NACA0015, 18, and 21 airfoils in the cactusImport subdirectory. WARNING: must however check the proper Mach number of these files (are they constant at different Machs?)
 
 So, testing the newly created file:
 
