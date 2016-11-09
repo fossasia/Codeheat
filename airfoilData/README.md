@@ -5,7 +5,7 @@ The following procedure is suggested for simplicity but by no means required; yo
 
 You can generate the data using the software of your choice or, for simplicity, get the data from the cactus released airfoil data for NACA0015, 18, and 21 airfoils in the cactusImport subdirectory. WARNING: must however check the proper Mach number of these files (are they constant at different Machs?). Other data can be also gathered from the following document and converted using OCR: http://www.osti.gov/servlets/purl/6548367
 
-Most data you will be able to obtain will be for low Mach number, thus, in the event that you are not able to get airfoil data at higher mach numbers, it is reasonable to produce C81 files with only Mach 0 and Mach 0.2 number columnse, making them equal, and making different C81 files based on the variation opf the Reynolds number (go for more or less 5 Reynolds number)
+Most data you will be able to obtain will be for low Mach number, thus, in the event that you are not able to get airfoil data at higher mach numbers, it is reasonable to produce C81 files with only Mach 0 and Mach 0.2 number columns, making them equal, and making different C81 files based on the variation opf the Reynolds number (go for more or less 5 Reynolds number)
 
 To test your newly created file you can perform the following actions:
 
