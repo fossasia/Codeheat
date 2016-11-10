@@ -13,10 +13,11 @@ Another source of drag and lift coefficient is available here: http://www.dtic.m
 
 To test your newly created file you can perform the following actions:
 
-1. run MBDyn with the new c81 input file
+1. run MBDyn with the new c81 input file:
 
   `mbdyn airfoil.mbd -o DEL`
-2.  
+  
+2.  Observe your resulting lift, drag, and moment coefficients when running MBDyn:
 
   for lift coefficient:  `cat DEL.aer |grep "       1"|awk {'print $2, $5'}|feedgnuplot --domain`
   
