@@ -17,7 +17,7 @@ To test your newly created file you can perform the following actions:
 
   `mbdyn airfoil.mbd -o DEL`
   
-2.  Observe your resulting lift, drag, and moment coefficients when running MBDyn:
+2. observe your resulting lift, drag, and moment coefficients when running MBDyn:
 
   for lift coefficient:  `cat DEL.aer |grep "       1"|awk {'print $2, $5'}|feedgnuplot --domain`
   
