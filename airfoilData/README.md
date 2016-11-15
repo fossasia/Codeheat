@@ -38,3 +38,18 @@ The following procedure is suggested for testing your newly created C81 file, bu
 
 Instructions for the Google code-in
 ======
+
+---
+
+1. take one of the three airfoil properties file from the cactusImport directories
+
+2. convert the Reynolds numbers into Mach numbers using the following rule which applies only to the cactusImport dataset: Mach = Reynolds * 2.8177e-07
+
+3. prepare the C81 free format file, as described on p.35 of the MBDyn manual (https://www.mbdyn.org/userfiles/documents/mbdyn-input-1.7.1.pdf) and as shown in the NACA0012 example file "naca0012_free_format.c81"
+
+4. optionnaly check that your new file gives the same results as the default naca0012 file by running the testing procedure given above
+
+5. upload your file in the "gci_submissions" folder
+
+
+---
