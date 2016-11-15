@@ -1,7 +1,7 @@
 # mbdyn-airfoils
 Instructions for eventual contributors
 
-**Google code-in Warning:** this may be a challenging task! Unless you really know what you are doing, follow the instructions of the "Google code-in" section to avoid a very long task.
+**Google code-in Warning:** this may be a challenging task! Unless you really know what you are doing, follow the instructions of the "Google code-in" section below to avoid a very long task.
 
 repository of c81 airfoil data to use with MBDyn
 
