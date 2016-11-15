@@ -49,7 +49,7 @@ Instructions for the Google code-in
 
 4. to increase the chances that your task gets accepted on your first try, you may check that your new file works and gives the results similar as the default naca0012 file by running the MBDyn testing procedure given above
 
-5. upload your file in the "gci_submissions" folder
+5. upload your c81 file in the "gci_submissions" folder
 
 
 ---
