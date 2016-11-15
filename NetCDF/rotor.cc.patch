@@ -1,0 +1,360 @@
+--- rotor.cc	2016-04-24 21:10:42.000000000 +0200
++++ rotor.cc.lg	2016-09-08 14:39:20.501815000 +0200
+@@ -66,7 +66,7 @@
+ iCurrIter(0),
+ dTolerance(0),
+ dEta(0),
+-bUMeanRefConverged(false),
++bUMeanRefConverged(0),
+ Weight(), dWeight(0.),
+ dHoverCorrection(1.), dForwardFlightCorrection(1.),
+ RRotTranspose(::Zero3x3), RRot(::Eye3), RRot3(::Zero3),
+@@ -95,7 +95,7 @@
+ iCurrIter(0),
+ dTolerance(0),
+ dEta(0),
+-bUMeanRefConverged(false),
++bUMeanRefConverged(0),
+ Weight(), dWeight(0.),
+ dHoverCorrection(1.), dForwardFlightCorrection(1.),
+ RRotTranspose(::Zero3x3), RRot(::Eye3), RRot3(::Zero3),
+@@ -103,6 +103,19 @@
+ dPsi0(0.), dSinAlphad(1.), dCosAlphad(0.),
+ dMu(0.), dLambda(1.), dChi(0.),
+ dVelocity(0.), dOmega(0.),
++#ifdef USE_NETCDF
++Var_F(0),
++Var_M(0),
++Var_dUMean(0),
++Var_dVelocity(0),
++Var_dAngle(0),
++Var_dMu(0),
++Var_dLambda(0),
++Var_dChi(0),
++Var_dPsi0(0),
++Var_bUMeanRef(0),
++Var_iCurrIter(0),
++#endif // USE_NETCDF
+ iNumSteps(0)
+ {
+ 	Init(pC, rrot, pR, pG, ppres, dR, iMaxIt, dTol, dE, fOut);
+@@ -177,9 +190,215 @@
+ 	}
+ 
+ 	InducedVelocity::AfterConvergence(X, XP);
++
++#ifdef USE_NETCDF
++		// calculations to do before output,
++#ifdef USE_MPI
++#else /* !USE_MPI */
++	F = RRotTranspose*Res.Force();
++	M = RRotTranspose*Res.Moment();
++	dAngle = atan2(dSinAlphad,dCosAlphad);
++		// ,calculations to do before output
++#endif /* !USE_MPI */
++#endif /* USE_NETCDF */
++}
++
++void
++Rotor::OutputPrepare_int(const std::string& type, OutputHandler& OH, std::string& name)
++{
++#ifdef USE_NETCDF
++    ASSERT(OH.IsOpen(OutputHandler::NETCDF));
++    std::ostringstream os;
++    os << "elem.inducedvelocity." << GetLabel();
++    (void)OH.CreateVar(os.str(), type);
++    os << ".";
++    name = os.str();
++#endif // USE_NETCDF
++}
++
++
++void
++Rotor::OutputPrepare(OutputHandler &OH)
++{
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			std::string name;
++			OutputPrepare_int("rotor", OH, name);
++			OutputPrepare_F(OH, name);
++			OutputPrepare_M(OH, name);
++			OutputPrepare_UMean(OH, name);
++			OutputPrepare_dVelocity(OH, name);
++			OutputPrepare_dAngle(OH, name);
++			OutputPrepare_dMu(OH, name);
++			OutputPrepare_dLambda(OH, name);
++			OutputPrepare_dChi(OH, name);
++			OutputPrepare_Psi0(OH, name);
++			OutputPrepare_bUMeanRef(OH, name);
++			OutputPrepare_iCurrIter(OH, name);
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_F(OutputHandler& OH, std::string& name)
++{
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_F = OH.CreateVar<Vec3>(name + "F", "N", "rotor force in x, y and z directions (longitudinal, lateral and thrust components)");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_M(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_M = OH.CreateVar<Vec3>(name + "M", "Nm", "rotor moment about x, y and z directions (roll, pitch and torque components)");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_UMean(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dUMean = OH.CreateVar<doublereal>(name + "dUMean", "m/s", "mean inflow velocity, based on momentum theory");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dVelocity(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dVelocity = OH.CreateVar<doublereal>(name + "dVelocity", "m/s", "reference velocity at rotor center, sum of airstream and craft node velocity");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dAngle(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dAngle = OH.CreateVar<doublereal>(name + "dAngle", "rad", "rotor disk angle");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dMu(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dMu = OH.CreateVar<doublereal>(name + "dMu", "NA", "advance parameter mu");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dLambda(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dLambda = OH.CreateVar<doublereal>(name + "dLambda", "NA", "inflow parameter lambda");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dChi(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dChi = OH.CreateVar<doublereal>(name + "dChi", "rad", "advance/inflow angle, definition in manual");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_Psi0(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dPsi0 = OH.CreateVar<doublereal>(name + "dPsi0", "rad", "reference azimuthal direction related to rotor yaw angle");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_bUMeanRef(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_bUMeanRef = OH.CreateVar<integer>(name + "bUMeanRef", "NA", "boolean flag indicating convergence");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_iCurrIter(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_iCurrIter = OH.CreateVar<integer>(name + "iCurrIterVoid", "NA", "number of iterations required for convergence");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dVConst(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dVConst = OH.CreateVar<doublereal>(name + "dVConst", "NA", "constant inflow state");
++		}
++    }
++#endif // USE_NETCDF
+ }
+ 
+ void
++Rotor::OutputPrepare_dVSine(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dVSine = OH.CreateVar<doublereal>(name + "dVSine", "NA", "sine inflow state (lateral)");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
++Rotor::OutputPrepare_dVCosine(OutputHandler& OH, std::string& name){
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_dVCosine = OH.CreateVar<doublereal>(name + "dVCosine", "NA", "cosine inflow state (longitudinal)");
++		}
++    }
++#endif // USE_NETCDF
++}
++
++
++
++void
+ Rotor::Output(OutputHandler& OH) const
+ {
+     	if (bToBeOutput()) {
+@@ -243,6 +462,21 @@
+ 		}
+ 
+ #else /* !USE_MPI */
++#ifdef USE_NETCDF
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_F->put_rec(F.pGetVec(), OH.GetCurrentStep());
++			Var_M->put_rec(M.pGetVec(), OH.GetCurrentStep());
++			Var_dUMean->put_rec(&dUMean, OH.GetCurrentStep());
++			Var_dVelocity->put_rec((&dVelocity), OH.GetCurrentStep());
++			Var_dAngle->put_rec((&dAngle), OH.GetCurrentStep());
++			Var_dMu->put_rec((&dMu), OH.GetCurrentStep());
++			Var_dLambda->put_rec((&dLambda), OH.GetCurrentStep());
++			Var_dChi->put_rec((&dChi), OH.GetCurrentStep());
++			Var_dPsi0->put_rec((&dPsi0), OH.GetCurrentStep());
++			Var_bUMeanRef->put_rec((&bUMeanRefConverged), OH.GetCurrentStep());
++			Var_iCurrIter->put_rec((&iCurrIter), OH.GetCurrentStep());
++		}
++#endif /* USE_NETCDF */
+ 		OH.Rotors()
+ 			<< std::setw(8) << GetLabel()	/* 1 */
+ 			<< " " << RRotTranspose*Res.Force()	/* 2-4 */
+@@ -425,7 +659,7 @@
+ 		dGE -= 1./(z*z);
+ 	}
+ 
+-	bUMeanRefConverged = false;
++	bUMeanRefConverged = 0;
+ 	if (dVTip > dVTipTreshold*dVTipRef) {
+ 		doublereal dCt = dT/(dRho*dArea*dVTip*dVTip);
+ 		doublereal dLambda0 = dVelocity*dSinAlphad/dVTip;
+@@ -459,7 +693,7 @@
+ #endif
+ 
+ 			if (std::abs(dF) <= dTolerance) {
+-				bUMeanRefConverged = true;
++				bUMeanRefConverged = 1;
+ 				break;
+ 			}
+ 		}
+@@ -1615,6 +1849,38 @@
+ 
+ 
+ void
++DynamicInflowRotor::OutputPrepare(OutputHandler &OH)
++{
++#ifdef USE_NETCDF
++    if (bToBeOutput()) {
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++#ifdef USE_MPI
++#else /* !USE_MPI */
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			std::string name;
++			OutputPrepare_int("rotor", OH, name);
++			OutputPrepare_F(OH, name);
++			OutputPrepare_M(OH, name);
++			OutputPrepare_UMean(OH, name);
++			OutputPrepare_dVelocity(OH, name);
++			OutputPrepare_dAngle(OH, name);
++			OutputPrepare_dMu(OH, name);
++			OutputPrepare_dLambda(OH, name);
++			OutputPrepare_dChi(OH, name);
++			OutputPrepare_Psi0(OH, name);
++			OutputPrepare_bUMeanRef(OH, name);
++			OutputPrepare_iCurrIter(OH, name);
++			OutputPrepare_dVConst(OH, name);
++			OutputPrepare_dVSine(OH, name);
++			OutputPrepare_dVCosine(OH, name);
++		}
++#endif /* !USE_MPI */
++		}
++    }
++#endif // USE_NETCDF
++}
++
++void
+ DynamicInflowRotor::Output(OutputHandler& OH) const
+ {
+      	/*
+@@ -1687,6 +1953,24 @@
+ 		}
+ 
+ #else /* !USE_MPI */
++#ifdef USE_NETCDF
++		if (OH.UseNetCDF(OutputHandler::AERODYNAMIC)) {
++			Var_F->put_rec(F.pGetVec(), OH.GetCurrentStep());
++			Var_M->put_rec(M.pGetVec(), OH.GetCurrentStep());
++			Var_dUMean->put_rec(&dUMean, OH.GetCurrentStep());
++			Var_dVelocity->put_rec((&dVelocity), OH.GetCurrentStep());
++			Var_dAngle->put_rec((&dAngle), OH.GetCurrentStep());
++			Var_dMu->put_rec((&dMu), OH.GetCurrentStep());
++			Var_dLambda->put_rec((&dLambda), OH.GetCurrentStep());
++			Var_dChi->put_rec((&dChi), OH.GetCurrentStep());
++			Var_dPsi0->put_rec((&dPsi0), OH.GetCurrentStep());
++			Var_bUMeanRef->put_rec((&bUMeanRefConverged), OH.GetCurrentStep());
++			Var_iCurrIter->put_rec((&iCurrIter), OH.GetCurrentStep());
++			Var_dVConst->put_rec((&dVConst), OH.GetCurrentStep());
++			Var_dVSine->put_rec((&dVSine), OH.GetCurrentStep());
++			Var_dVCosine->put_rec((&dVCosine), OH.GetCurrentStep());
++		}
++#endif /* USE_NETCDF */
+ 		OH.Rotors()
+ 			<< std::setw(8) << GetLabel()	/* 1 */
+ 			<< " " << RRotTranspose*Res.Force()	/* 2-4 */

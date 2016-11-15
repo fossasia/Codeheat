@@ -1,0 +1,77 @@
+--- rotor.h	2015-10-30 06:05:37.000000000 +0100
++++ rotor.h.lg	2016-09-08 14:41:21.069817000 +0200
+@@ -57,10 +57,10 @@
+ 
+ 	// iterations for dUMeanRef
+ 	unsigned int iMaxIter;
+-	unsigned int iCurrIter;
++	int iCurrIter;
+ 	doublereal dTolerance;
+ 	doublereal dEta;
+-	bool bUMeanRefConverged;
++	int bUMeanRefConverged;
+ 
+ 	DriveOwner Weight;
+ 	// Peso della velocita' indotta media
+@@ -113,6 +113,41 @@
+ 		const doublereal& dTol,
+ 		const doublereal& dE,
+ 		flag fOut);
++		
++#ifdef USE_NETCDF
++	Vec3 F;
++	Vec3 M;
++	doublereal dAngle;
++	NcVar	*Var_F;
++	NcVar	*Var_M;
++	NcVar	*Var_dUMean;
++	NcVar	*Var_dVelocity;
++	NcVar	*Var_dAngle;
++	NcVar	*Var_dMu;
++	NcVar	*Var_dLambda;
++	NcVar	*Var_dChi;
++	NcVar	*Var_dPsi0;
++	NcVar	*Var_bUMeanRef;
++	NcVar	*Var_iCurrIter;
++	NcVar	*Var_dVConst;
++	NcVar	*Var_dVSine;
++	NcVar	*Var_dVCosine;
++	virtual void OutputPrepare_int(const std::string& type, OutputHandler& OH, std::string& name);
++	void OutputPrepare_F(OutputHandler& OH, std::string& name);
++	void OutputPrepare_M(OutputHandler& OH, std::string& name);
++	void OutputPrepare_UMean(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dVelocity(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dAngle(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dMu(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dLambda(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dChi(OutputHandler& OH, std::string& name);
++	void OutputPrepare_Psi0(OutputHandler& OH, std::string& name);
++	void OutputPrepare_bUMeanRef(OutputHandler& OH, std::string& name);
++	void OutputPrepare_iCurrIter(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dVConst(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dVSine(OutputHandler& OH, std::string& name);
++	void OutputPrepare_dVCosine(OutputHandler& OH, std::string& name);
++#endif /* USE_NETCDF */
+ 
+ public:
+ 	Rotor(unsigned int uL, const DofOwner* pDO);
+@@ -133,6 +168,9 @@
+ 
+ 	// output; si assume che ogni tipo di elemento sappia,
+ 	// attraverso l'OutputHandler, dove scrivere il proprio output
++#ifdef USE_NETCDF
++	virtual void OutputPrepare(OutputHandler &OH); // for NETCDF
++#endif /* USE_NETCDF */
+ 	virtual void Output(OutputHandler& OH) const;
+ 
+ 	// Contributo al file di Restart
+@@ -596,6 +634,9 @@
+ 		return 3;
+ 	};
+ 
++#ifdef USE_NETCDF
++	virtual void OutputPrepare(OutputHandler &OH); // for NETCDF
++#endif /* USE_NETCDF */
+ 	// output; si assume che ogni tipo di elemento sappia,
+ 	// attraverso l'OutputHandler, dove scrivere il proprio output
+ 	virtual void Output(OutputHandler& OH) const;
