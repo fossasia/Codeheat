@@ -1,0 +1,132 @@
+output frequency: 10
+structural node: 1 0 0 0 euler123 -0 0 0
+structural node: 2 0 0 -1 euler123 -0 0 0
+body: 1 2 1 0 0 0 1 0 0 0 1 0 0 0 1
+clamp: 1 1 0 0 0 1 0 0 0 1 0 0 0 1 1 0 0 0 1 0 0 0 1 0 0 0 1
+inline: 2 1 0 0 0 1 0 0 0 1 0 0 0 1 2 0 0 0 1 0 0 0 1 0 0 0 1
+prismatic: 3 1 0 0 0 1 0 0 0 1 0 0 0 1 2 0 0 0 1 0 0 0 1 0 0 0 1
+deformabledisplacementjoint: 4 1 0 0 0 1 0 0 0 1 0 0 0 1 2 0 0 0 1 0 0 0 1 0 0 0 1
+struct node dofs: 0 6
+struct node eqs: 0 12
+struct node momentum dofs: 12
+struct node momentum eqs: 6
+struct displacement node dofs: 0 6
+struct displacement node eqs: 0 12
+struct displacement node momentum dofs: 12
+struct displacement node momentum eqs: 6
+struct node labels: 1 2
+struct displacement node labels: 1 2
+Symbol table:
+  integer Body_Mass = 1
+  real C = 1.
+  const bool FALSE = 0
+  const integer INT_MAX = 2147483647
+  const integer INT_MIN = -2147483648
+  integer JoClamp_Ground = 1
+  integer JoDfmd_SpringDamper = 4
+  integer JoInLin_Ground_Mass = 2
+  integer JoPrism_Ground_Mass = 3
+  real K = 20.
+  real L = 1.
+  real M = 1.
+  integer Node_Ground = 1
+  integer Node_Mass = 2
+  const integer RAND_MAX = 2147483647
+  const real REAL_MAX = 1.79769e+308
+  const real REAL_MIN = 2.22507e-308
+  integer Step = 0
+  const bool TRUE = 1
+  real Time = 0.
+  real TimeStep = 0.
+  real Var = 0.
+  const real deg2rad = 0.0174533
+  const real e = 2.71828
+  const real ft2m = 0.3048
+  const real in2m = 0.0254
+  const real in2mm = 25.4
+  const real kg2lb = 2.20462
+  const real kg2slug = 0.0685218
+  const real lb2kg = 0.453592
+  const real m2ft = 3.28084
+  const real m2in = 39.3701
+  const real mm2in = 0.0393701
+  const real pi = 3.14159
+  const real rad2deg = 57.2958
+  const real slug2kg = 14.5939
+Environment:
+  XDG_VTNR=7
+  LC_PAPER=it_IT.UTF-8
+  LC_ADDRESS=it_IT.UTF-8
+  XDG_SESSION_ID=c2
+  XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/louis
+  LC_MONETARY=it_IT.UTF-8
+  CLUTTER_IM_MODULE=xim
+  SESSION=ubuntu
+  GPG_AGENT_INFO=/home/louis/.gnupg/S.gpg-agent:0:1
+  TERM=xterm-256color
+  VTE_VERSION=4205
+  XDG_MENU_PREFIX=gnome-
+  SHELL=/bin/bash
+  OPENBLAS_NUM_THREADS=1
+  QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+  WINDOWID=96469002
+  LC_NUMERIC=it_IT.UTF-8
+  UPSTART_SESSION=unix:abstract=/com/ubuntu/upstart-session/1000/1474
+  GNOME_KEYRING_CONTROL=
+  GTK_MODULES=gail:atk-bridge:unity-gtk-module
+  USER=louis
+  LD_LIBRARY_PATH=:/home/louis/bin/Dakota/bin:/home/louis/bin/Dakota/lib
+  LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+  QT_ACCESSIBILITY=1
+  LC_TELEPHONE=it_IT.UTF-8
+  XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
+  XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0
+  SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+  SESSION_MANAGER=local/lati3:@/tmp/.ICE-unix/1855,unix/lati3:/tmp/.ICE-unix/1855
+  DEFAULTS_PATH=/usr/share/gconf/ubuntu.default.path
+  XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg
+  DESKTOP_SESSION=ubuntu
+  PATH=/home/louis/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/louis/bin/Dakota/bin
+  QT_IM_MODULE=ibus
+  QT_QPA_PLATFORMTHEME=appmenu-qt5
+  LC_IDENTIFICATION=it_IT.UTF-8
+  XDG_SESSION_TYPE=x11
+  PWD=/home/louis/b12/media/louis/SSD5/PIF2015/GSoC/Gci2016/mbdyn-gci/MBDynOutputs
+  JOB=unity-settings-daemon
+  XMODIFIERS=@im=ibus
+  GNOME_KEYRING_PID=
+  LANG=en_US.UTF-8
+  GDM_LANG=en_US
+  MANDATORY_PATH=/usr/share/gconf/ubuntu.mandatory.path
+  LC_MEASUREMENT=it_IT.UTF-8
+  COMPIZ_CONFIG_PROFILE=ubuntu
+  IM_CONFIG_PHASE=1
+  GDMSESSION=ubuntu
+  SESSIONTYPE=gnome-session
+  GTK2_MODULES=overlay-scrollbar
+  SHLVL=1
+  HOME=/home/louis
+  XDG_SEAT=seat0
+  LANGUAGE=en_US
+  GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+  UPSTART_INSTANCE=
+  UPSTART_EVENTS=xsession started
+  XDG_SESSION_DESKTOP=ubuntu
+  LOGNAME=louis
+  COMPIZ_BIN_PATH=/usr/bin/
+  DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-l8xoaz3mxy
+  XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop:/var/lib/snapd/desktop
+  QT4_IM_MODULE=xim
+  LESSOPEN=| /usr/bin/lesspipe %s
+  INSTANCE=
+  UPSTART_JOB=unity7
+  XDG_RUNTIME_DIR=/run/user/1000
+  DISPLAY=:0
+  XDG_CURRENT_DESKTOP=Unity
+  GTK_IM_MODULE=ibus
+  LESSCLOSE=/usr/bin/lesspipe %s %s
+  LC_TIME=it_IT.UTF-8
+  LC_NAME=it_IT.UTF-8
+  XAUTHORITY=/home/louis/.Xauthority
+  OLDPWD=/home/louis/b12/media/louis/SSD5/PIF2015/GSoC/Gci2016/mbdyn-gci
+  _=/home/louis/bin/mbdyn-1.7.3/bin/mbdyn
