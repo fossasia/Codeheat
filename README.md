@@ -1,4 +1,9 @@
-# mbdyn-gci
-repository used by MBDyn for some tasks of the 2016-2017 Google code-in
+# Codeheat
 
-Look for your specific task in the given subfolders
+Join us for the Codeheat contest at https://codeheat.org
+
+# Archive
+
+### mbdyn tasks archive
+
+MBDyn tasks for Code-in. Look for your specific task in the given subfolders.
