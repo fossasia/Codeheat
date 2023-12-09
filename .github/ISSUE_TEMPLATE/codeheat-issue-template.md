@@ -1,8 +1,8 @@
 ---
-name: Custom issue template
+name: Codeheat issue template
 about: Describe this issue template's purpose here.
 title: ''
-labels: ''
+labels: codeheat
 assignees: ''
 
 ---
@@ -23,3 +23,5 @@ What the expected deliverable is (a tutorial reviewed by at least one member of 
 - Links to additional resources
 - Links to tutorials and websites
 - If you have any questions, please reach out to our Gitter channel: https://gitter.im/fossasia/fossasia
+
+You can now proceed to [the next task](LINK)
