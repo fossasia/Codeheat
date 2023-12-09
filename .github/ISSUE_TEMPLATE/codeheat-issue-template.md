@@ -1,11 +1,13 @@
 ---
 name: Codeheat issue template
-about: "[Starter Issue]"
+about: Starter Issue
 title: ''
-labels: codeheat
+labels: codeheat, starter
 assignees: ''
 
 ---
+
+This issue can be taken by multiple CodeHeat participants.
 
 ### OBJECTIVE
 An initial sentence or two that describes what the task entails and why someone would want to spend their time on it. 
@@ -21,5 +23,3 @@ What the expected deliverable is (a tutorial reviewed by at least one member of 
 
 ### LINKS
 - If you have any questions, please reach out to our Gitter channel: https://gitter.im/fossasia/fossasia
-
-You can now proceed to [the next task](LINK)
