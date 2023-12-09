@@ -1,6 +1,6 @@
 ---
 name: Codeheat issue template
-about: Describe this issue template's purpose here.
+about: "[Starter Issue]"
 title: ''
 labels: codeheat
 assignees: ''
@@ -20,8 +20,6 @@ What the expected deliverable is (a tutorial reviewed by at least one member of 
 ### HOW TO SUBMIT YOUR WORK
 
 ### LINKS
-- Links to additional resources
-- Links to tutorials and websites
 - If you have any questions, please reach out to our Gitter channel: https://gitter.im/fossasia/fossasia
 
 You can now proceed to [the next task](LINK)
