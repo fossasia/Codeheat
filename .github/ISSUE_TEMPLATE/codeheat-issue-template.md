@@ -21,5 +21,6 @@ What the expected deliverable is (a tutorial reviewed by at least one member of 
 
 ### HOW TO SUBMIT YOUR WORK
 
-### LINKS
-- If you have any questions, please reach out to our Gitter channel: https://gitter.im/fossasia/fossasia
+### QUESTIONS
+- If you have any questions, please comment on this issue directly, or reach out to us at https://gitter.im/fossasia/fossasia
+- If you identify any problem while working on this issue, take up [a related task](https://github.com/fossasia/Codeheat/issues/13) to file a bug report
