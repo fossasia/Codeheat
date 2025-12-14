@@ -2,18 +2,18 @@ name: "Org invite & team add — Codeheat"
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
 
 permissions:
   issues: write
-  contents: read
 
 jobs:
   invite-and-add:
     # Do not run on forks + ensure label exists
     if: |
       github.repository_owner == 'FOSSASIA' &&
-      contains(github.event.issue.labels.*.name, 'org-invite')
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'org-invite'
 
     runs-on: ubuntu-latest
 
