@@ -1,60 +1,52 @@
 name: "Org invite & team add — Codeheat"
 on:
   issues:
-    types: [labeled]
+    types: [opened, labeled]
 
-# minimal permissions required for repository-level operations (issue comment/close)
 permissions:
   issues: write
   contents: read
 
 jobs:
   invite-and-add:
-    # only run when the label added is exactly "org-invite"
-    if: ${{ github.event.label && github.event.label.name == 'org-invite' }}
+    # Run if the issue has the org-invite label (on open OR on label add)
+    if:
+      contains(
+        github.event.issue.labels.*.name,
+        'org-invite'
+      )
     runs-on: ubuntu-latest
+
     env:
       ORG_NAME: "FOSSASIA"
       TEAM_SLUG: "codeheat"
-      REPO: "${{ github.repository }}"  # for logging
+
     steps:
       - name: Check required secret exists
-        id: check_secret
         run: |
           if [ -z "${{ secrets.ORG_ADMIN_TOKEN }}" ]; then
-            echo "ORG_ADMIN_TOKEN is missing. Please add the token as a repository secret."
+            echo "ORG_ADMIN_TOKEN is missing."
             exit 1
           fi
-          echo "Secret exists."
 
-      - name: Invite user to org + add to team + comment && close
-        id: invite_flow
-        uses: actions/github-script@v6
+      - name: Invite user to org and team
+        uses: actions/github-script@v6.4.1
         with:
-          # use the admin token which must have admin:org permission (classic PAT)
-          # note: do NOT store classic PAT in code, store it in repo secrets "ORG_ADMIN_TOKEN"
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
           script: |
             const org = process.env.ORG_NAME;
             const team_slug = process.env.TEAM_SLUG;
             const issue = context.payload.issue;
-            const actor = issue.user && issue.user.login ? issue.user.login : null;
-            const issue_number = issue.number;
+            const username = issue.user.login;
             const repo = context.repo;
+            const issue_number = issue.number;
 
-            if (!actor) {
-              const msg = `Cannot determine issue author. Aborting.`;
-              core.setFailed(msg);
-              return;
-            }
-
-            // helper: post comment
-            async function comment(msg) {
+            async function comment(body) {
               await github.rest.issues.createComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 issue_number,
-                body: msg,
+                body,
               });
             }
 
@@ -65,98 +57,42 @@ jobs:
                 team_slug
               });
             } catch (err) {
-              const message = `⚠️ Team \`${team_slug}\` was not found in org \`${org}\`. Please check the team slug.\n\nError: ${err.message || err}`;
-              await comment(message);
-              core.setFailed(message);
+              await comment(`❌ Team \`${team_slug}\` not found in org \`${org}\`.`);
+              core.setFailed(err.message);
               return;
             }
 
-            // Check if user is already an org member
-            let isMember = false;
-            try {
-              // This endpoint returns 204 for members, 404 for non-members
-              await github.request('GET /orgs/{org}/members/{username}', {
-                org,
-                username: actor
-              });
-              isMember = true;
-            } catch (err) {
-              if (err.status === 404) {
-                isMember = false;
-              } else {
-                const message = `Error checking org membership for ${actor}: ${err.message || err}`;
-                await comment(message);
-                core.setFailed(message);
-                return;
-              }
-            }
+            // Invite / ensure org membership
+            const membership = await github.request(
+              'PUT /orgs/{org}/memberships/{username}',
+              { org, username }
+            );
 
-            // Invite or set organization membership (PUT will create membership or invitation)
-            let membershipResult;
-            try {
-              membershipResult = await github.request('PUT /orgs/{org}/memberships/{username}', {
-                org,
-                username: actor,
-                role: 'member' // 'member' is typical. Could be 'admin' if desired (not recommended)
-              });
-            } catch (err) {
-              const message = `Failed to invite / set membership for @${actor}. Make sure the token has admin:org and the actor is a valid GitHub username.\n\nError: ${err.message || err}`;
-              await comment(message);
-              core.setFailed(message);
-              return;
-            }
+            // Add to team
+            const teamMembership = await github.request(
+              'PUT /orgs/{org}/teams/{team_slug}/memberships/{username}',
+              { org, team_slug, username }
+            );
 
-            const orgMembershipState = membershipResult && membershipResult.data && membershipResult.data.state ? membershipResult.data.state : 'unknown';
+            await comment(
+              `✅ **Onboarding processed for @${username}**\n\n` +
+              `• Org membership: **${membership.data.state}**\n` +
+              `• Team membership: **${teamMembership.data.state}**\n\n` +
+              `If pending, please accept the GitHub invitation.`
+            );
 
-            // Add user to team (this will add immediately if user is a member, or create a team invitation)
-            let teamResult;
+            // Close issue (non-fatal)
             try {
-              teamResult = await github.request('PUT /orgs/{org}/teams/{team_slug}/memberships/{username}', {
-                org,
-                team_slug,
-                username: actor,
-                role: 'member' // options: member or maintainer
+              await github.rest.issues.update({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number,
+                state: 'closed',
               });
             } catch (err) {
-              const message = `Failed to add @${actor} to team \`${team_slug}\`. Check team slug and token permissions.\n\nError: ${err.message || err}`;
-              await comment(message);
-              core.setFailed(message);
-              return;
+              core.warning(`Failed to close issue #${issue_number}: ${err.message}`);
+              await comment(
+                `⚠️ Onboarding completed, but I couldn't auto-close this issue. ` +
+                `A maintainer may close it manually.`
+              );
             }
-
-            const teamState = teamResult && teamResult.data && teamResult.data.state ? teamResult.data.state : 'unknown';
-
-            // Write a helpful comment summarizing the results
-            let commentBody = `Thanks @${actor} — we've processed your request to join the **${org}** organization and the **${team_slug}** team.\n\n`;
-            commentBody += `**Organization membership:** ${orgMembershipState}\n`;
-            commentBody += `**Team membership:** ${teamState}\n\n`;
-
-            if (orgMembershipState === 'pending') {
-              commentBody += `You have been invited to the ${org} organization. Please check your email or your GitHub notifications and accept the invitation. Once accepted, membership will be active.\n\n`;
-            } else if (orgMembershipState === 'active') {
-              if (!isMember) {
-                commentBody += `You were added directly to the ${org} organization.\n\n`;
-              } else {
-                commentBody += `You are already a member of ${org}.\n\n`;
-              }
-            }
-
-            if (teamState === 'pending') {
-              commentBody += `Your team membership is pending (invitation sent). Accept the invitation to join the team.\n\n`;
-            } else if (teamState === 'active') {
-              commentBody += `You are now a member of the ${team_slug} team. 🎉\n\n`;
-            }
-
-            commentBody += `If something looks wrong, please reply to this issue or contact a repository admin.`;
-
-            await comment(commentBody);
-
-            // close the issue
-            await github.rest.issues.update({
-              owner: repo.owner,
-              repo: repo.repo,
-              issue_number,
-              state: 'closed'
-            });
-
-            core.info(`Processed invite for @${actor}. Org state: ${orgMembershipState}. Team state: ${teamState}.`);
