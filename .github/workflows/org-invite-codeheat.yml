@@ -1,4 +1,5 @@
 name: "Org invite & team add — Codeheat"
+
 on:
   issues:
     types: [opened, labeled]
@@ -9,12 +10,11 @@ permissions:
 
 jobs:
   invite-and-add:
-    # Run if the issue has the org-invite label (on open OR on label add)
-    if:
-      contains(
-        github.event.issue.labels.*.name,
-        'org-invite'
-      )
+    # Do not run on forks + ensure label exists
+    if: |
+      github.repository_owner == 'FOSSASIA' &&
+      contains(github.event.issue.labels.*.name, 'org-invite')
+
     runs-on: ubuntu-latest
 
     env:
@@ -30,7 +30,7 @@ jobs:
           fi
 
       - name: Invite user to org and team
-        uses: actions/github-script@v6.4.1
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
           script: |
@@ -50,38 +50,63 @@ jobs:
               });
             }
 
-            // Check team exists
+            // ---- Validate team exists ----
             try {
-              await github.request('GET /orgs/{org}/teams/{team_slug}', {
-                org,
-                team_slug
-              });
+              await github.request(
+                'GET /orgs/{org}/teams/{team_slug}',
+                { org, team_slug }
+              );
             } catch (err) {
-              await comment(`❌ Team \`${team_slug}\` not found in org \`${org}\`.`);
+              await comment(
+                `❌ **Onboarding failed**\n\n` +
+                `Team \`${team_slug}\` was not found in org \`${org}\`. ` +
+                `Please notify a maintainer.`
+              );
               core.setFailed(err.message);
               return;
             }
 
-            // Invite / ensure org membership
-            const membership = await github.request(
-              'PUT /orgs/{org}/memberships/{username}',
-              { org, username }
-            );
+            // ---- Org membership ----
+            let membership;
+            try {
+              membership = await github.request(
+                'PUT /orgs/{org}/memberships/{username}',
+                { org, username }
+              );
+            } catch (err) {
+              await comment(
+                `❌ **Failed to invite @${username} to ${org}**\n\n` +
+                `Error: ${err.message}`
+              );
+              core.setFailed(err.message);
+              return;
+            }
 
-            // Add to team
-            const teamMembership = await github.request(
-              'PUT /orgs/{org}/teams/{team_slug}/memberships/{username}',
-              { org, team_slug, username }
-            );
+            // ---- Team membership (non-fatal) ----
+            let teamMembership = null;
+            try {
+              teamMembership = await github.request(
+                'PUT /orgs/{org}/teams/{team_slug}/memberships/{username}',
+                { org, team_slug, username }
+              );
+            } catch (err) {
+              core.warning(
+                `Failed to add @${username} to team ${team_slug}: ${err.message}`
+              );
+            }
+
+            const teamStatusLine = teamMembership
+              ? `• Team membership: **${teamMembership.data.state}**\n`
+              : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
 
             await comment(
               `✅ **Onboarding processed for @${username}**\n\n` +
               `• Org membership: **${membership.data.state}**\n` +
-              `• Team membership: **${teamMembership.data.state}**\n\n` +
-              `If pending, please accept the GitHub invitation.`
+              teamStatusLine +
+              `\nIf any status is **pending**, please accept the GitHub invitation.`
             );
 
-            // Close issue (non-fatal)
+            // ---- Close issue (non-fatal) ----
             try {
               await github.rest.issues.update({
                 owner: repo.owner,
@@ -92,7 +117,7 @@ jobs:
             } catch (err) {
               core.warning(`Failed to close issue #${issue_number}: ${err.message}`);
               await comment(
-                `⚠️ Onboarding completed, but I couldn't auto-close this issue. ` +
+                `⚠️ Onboarding completed, but this issue could not be auto-closed. ` +
                 `A maintainer may close it manually.`
               );
             }
