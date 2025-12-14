@@ -22,18 +22,15 @@ jobs:
       TEAM_SLUG: "codeheat"
 
     steps:
-      - name: Check required secret exists
-        run: |
-          if [ -z "${{ secrets.ORG_ADMIN_TOKEN }}" ]; then
-            echo "ORG_ADMIN_TOKEN is missing."
-            exit 1
-          fi
-
       - name: Invite user to org and team
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
           script: |
+            // Validate that the token is present
+            if (!github.token || github.token.trim() === "") {
+              throw new Error("ORG_ADMIN_TOKEN is missing or empty. Please set the required secret.");
+            }
             const org = process.env.ORG_NAME;
             const team_slug = process.env.TEAM_SLUG;
             const issue = context.payload.issue;
