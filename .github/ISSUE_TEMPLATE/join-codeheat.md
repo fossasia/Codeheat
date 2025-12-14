@@ -12,6 +12,6 @@ I would like to join the **FOSSASIA** organization and be added to the **Codehea
 
 Short intro / reason you'd like to join:
 
-- 
+- [Write your reason here, e.g., "I want to contribute to FOSSASIA projects during Codeheat."]
 
 Thanks!
