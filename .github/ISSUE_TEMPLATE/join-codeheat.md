@@ -8,7 +8,7 @@ assignees: []
 
 Hello! 👋
 
-I would like to join the **FOSSASIA** organization and be added to the **codeheat** team.
+I would like to join the **FOSSASIA** organization and be added to the **Codeheat** team.
 
 Short intro / reason you'd like to join:
 
