@@ -42,12 +42,18 @@ jobs:
             const issue_number = issue.number;
 
             async function comment(body) {
-              await github.rest.issues.createComment({
-                owner: repo.owner,
-                repo: repo.repo,
-                issue_number,
-                body,
-              });
+              try {
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number,
+                  body,
+                });
+              } catch (err) {
+                core.warning(
+                  `Failed to post issue comment: ${err.message}`
+                );
+              }
             }
 
             // ---- Validate team exists ----
