@@ -55,10 +55,10 @@ jobs:
 
             // ---- Validate team exists ----
             try {
-              await github.request(
-                'GET /orgs/{org}/teams/{team_slug}',
-                { org, team_slug }
-              );
+              await github.rest.teams.getByName({
+                org,
+                team_slug,
+              });
             } catch (err) {
               await comment(
                 `❌ **Onboarding failed**\n\n` +
