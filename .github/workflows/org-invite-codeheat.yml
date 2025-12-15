@@ -88,10 +88,11 @@ jobs:
             // ---- Team membership (non-fatal) ----
             let teamMembership = null;
             try {
-              teamMembership = await github.request(
-                'PUT /orgs/{org}/teams/{team_slug}/memberships/{username}',
-                { org, team_slug, username }
-              );
+              teamMembership = await github.rest.teams.addOrUpdateMembershipForUserInOrg({
+                org,
+                team_slug,
+                username,
+              });
             } catch (err) {
               core.warning(
                 `Failed to add @${username} to team ${team_slug}: ${err.message}`
