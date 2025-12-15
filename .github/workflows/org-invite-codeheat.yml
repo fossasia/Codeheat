@@ -72,10 +72,10 @@ jobs:
             // ---- Org membership ----
             let membership;
             try {
-              membership = await github.request(
-                'PUT /orgs/{org}/memberships/{username}',
-                { org, username }
-              );
+              membership = await github.rest.orgs.setMembershipForUser({
+                org,
+                username
+              });
             } catch (err) {
               await comment(
                 `❌ **Failed to invite @${username} to ${org}**\n\n` +
