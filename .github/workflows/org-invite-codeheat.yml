@@ -1,0 +1,127 @@
+name: "Org invite & team add — Codeheat"
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  invite-and-add:
+    # Do not run on forks + ensure label exists
+    if: |
+      github.repository_owner == 'FOSSASIA' &&
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'org-invite'
+
+    runs-on: ubuntu-latest
+
+    env:
+      ORG_NAME: "FOSSASIA"
+      TEAM_SLUG: "codeheat"
+
+    steps:
+      - name: Invite user to org and team
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
+          script: |
+            // Validate that the token is present
+            if (!github.token || github.token.trim() === "") {
+              throw new Error("ORG_ADMIN_TOKEN is missing or empty. Please set the required secret.");
+            }
+            const org = process.env.ORG_NAME;
+            const team_slug = process.env.TEAM_SLUG;
+            const issue = context.payload.issue;
+            const username = issue.user.login;
+            const repo = context.repo;
+            const issue_number = issue.number;
+
+            async function comment(body) {
+              try {
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number,
+                  body,
+                });
+              } catch (err) {
+                core.warning(
+                  `Failed to post issue comment: ${err.message}`
+                );
+              }
+            }
+
+            // ---- Validate team exists ----
+            try {
+              await github.rest.teams.getByName({
+                org,
+                team_slug,
+              });
+            } catch (err) {
+              await comment(
+                `❌ **Onboarding failed**\n\n` +
+                `Team \`${team_slug}\` was not found in org \`${org}\`. ` +
+                `Please notify a maintainer.`
+              );
+              core.setFailed(err.message);
+              return;
+            }
+
+            // ---- Org membership ----
+            let membership;
+            try {
+              membership = await github.rest.orgs.setMembershipForUser({
+                org,
+                username
+              });
+            } catch (err) {
+              await comment(
+                `❌ **Failed to invite @${username} to ${org}**\n\n` +
+                `Error: ${err.message}`
+              );
+              core.setFailed(err.message);
+              return;
+            }
+
+            // ---- Team membership (non-fatal) ----
+            let teamMembership = null;
+            try {
+              teamMembership = await github.rest.teams.addOrUpdateMembershipForUserInOrg({
+                org,
+                team_slug,
+                username,
+              });
+            } catch (err) {
+              core.warning(
+                `Failed to add @${username} to team ${team_slug}: ${err.message}`
+              );
+            }
+
+            const teamStatusLine = teamMembership
+              ? `• Team membership: **${teamMembership.data.state}**\n`
+              : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
+
+            await comment(
+              `✅ **Onboarding processed for @${username}**\n\n` +
+              `• Org membership: **${membership.data.state}**\n` +
+              teamStatusLine +
+              `\nIf any status is **pending**, please accept the GitHub invitation.`
+            );
+
+            // ---- Close issue (non-fatal) ----
+            try {
+              await github.rest.issues.update({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number,
+                state: 'closed',
+              });
+            } catch (err) {
+              core.warning(`Failed to close issue #${issue_number}: ${err.message}`);
+              await comment(
+                `⚠️ Onboarding completed, but this issue could not be auto-closed. ` +
+                `A maintainer may close it manually.`
+              );
+            }
