@@ -71,18 +71,29 @@ jobs:
 
             // ---- Org membership ----
             let membership;
+            // Check if user is already an org member
             try {
-              membership = await github.rest.orgs.setMembershipForUser({
+              membership = await github.rest.orgs.getMembershipForUser({
                 org,
-                username
+                username,
               });
-            } catch (err) {
-              await comment(
-                `❌ **Failed to invite @${username} to ${org}**\n\n` +
-                `Error: ${err.message}`
-              );
-              core.setFailed(err.message);
-              return;
+              core.info(`@${username} is already a ${membership.data.state} member of ${org}`);
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              // User not found, invite them
+              try {
+                membership = await github.rest.orgs.setMembershipForUser({
+                  org,
+                  username,
+                });
+              } catch (err) {
+                await comment(
+                  `❌ **Failed to invite @${username} to ${org}**\n\n` +
+                  `Error: ${err.message}`
+                );
+                core.setFailed(err.message);
+                return;
+              }
             }
 
             // ---- Team membership (non-fatal) ----
