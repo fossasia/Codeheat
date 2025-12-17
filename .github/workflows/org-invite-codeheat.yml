@@ -22,15 +22,20 @@ jobs:
       TEAM_SLUG: "codeheat"
 
     steps:
+      - name: Debug secret presence
+        run: |
+          if [ -z "${{ secrets.ORG_ADMIN_TOKEN }}" ]; then
+            echo "❌ ORG_ADMIN_TOKEN is NOT available"
+            exit 1
+          else
+            echo "✅ ORG_ADMIN_TOKEN is available"
+          fi
+
       - name: Invite user to org and team
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
           script: |
-            // Validate that the token is present
-            if (!github.token || github.token.trim() === "") {
-              throw new Error("ORG_ADMIN_TOKEN is missing or empty. Please set the required secret.");
-            }
             const org = process.env.ORG_NAME;
             const team_slug = process.env.TEAM_SLUG;
             const issue = context.payload.issue;
@@ -71,29 +76,22 @@ jobs:
 
             // ---- Org membership ----
             let membership;
-            // Check if user is already an org member
+            let invited = false;
+
             try {
               membership = await github.rest.orgs.getMembershipForUser({
                 org,
                 username,
               });
-              core.info(`@${username} is already a ${membership.data.state} member of ${org}`);
             } catch (error) {
               if (error.status !== 404) throw error;
-              // User not found, invite them
-              try {
-                membership = await github.rest.orgs.setMembershipForUser({
-                  org,
-                  username,
-                });
-              } catch (err) {
-                await comment(
-                  `❌ **Failed to invite @${username} to ${org}**\n\n` +
-                  `Error: ${err.message}`
-                );
-                core.setFailed(err.message);
-                return;
-              }
+
+              membership = await github.rest.orgs.setMembershipForUser({
+                org,
+                username,
+              });
+
+              invited = true;
             }
 
             // ---- Team membership (non-fatal) ----
@@ -110,15 +108,21 @@ jobs:
               );
             }
 
+            const orgStatusLine = invited
+              ? `• Org invitation: **${membership.data.state}**\n`
+              : `• Org membership: **already active**\n`;
+
             const teamStatusLine = teamMembership
               ? `• Team membership: **${teamMembership.data.state}**\n`
               : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
 
             await comment(
-              `✅ **Onboarding processed for @${username}**\n\n` +
-              `• Org membership: **${membership.data.state}**\n` +
+              `✅ **Onboarding request processed for @${username}**\n\n` +
+              orgStatusLine +
               teamStatusLine +
-              `\nIf any status is **pending**, please accept the GitHub invitation.`
+              (invited
+                ? `\nℹ️ Please accept the GitHub invitation from your notifications or email.`
+                : `\nℹ️ You are already a member. No further action is required.`)
             );
 
             // ---- Close issue (non-fatal) ----
