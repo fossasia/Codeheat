@@ -136,13 +136,22 @@ jobs:
               ? `• Team membership: **${teamMembership.data.state}**\n`
               : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
 
+            let actionMessage = '';
+
+            if (membership.data.state === 'pending') {
+              actionMessage =
+                `\nℹ️ Please accept the GitHub organization invitation ` +
+                `from your notifications or email to complete onboarding.`;
+            } else {
+              actionMessage =
+                `\nℹ️ You are already an active member. No further action is required.`;
+            }
+
             await comment(
               `✅ **Onboarding request processed for @${username}**\n\n` +
               orgStatusLine +
               teamStatusLine +
-              (invited
-                ? `\nℹ️ Please accept the GitHub invitation from your notifications or email.`
-                : `\nℹ️ You are already a member. No further action is required.`)
+              actionMessage
             );
 
             // ---- Close issue (non-fatal) ----
