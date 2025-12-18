@@ -23,8 +23,10 @@ jobs:
 
     steps:
       - name: Debug secret presence
+        env:
+          ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
         run: |
-          if [ -z "${{ secrets.ORG_ADMIN_TOKEN }}" ]; then
+          if [ -z "${ORG_ADMIN_TOKEN}" ]; then
             echo "❌ ORG_ADMIN_TOKEN is NOT available"
             exit 1
           else
