@@ -86,7 +86,15 @@ jobs:
                 username,
               });
             } catch (error) {
-              if (error.status !== 404) throw error;
+              if (error.status !== 404) {
+                await comment(
+                  `❌ **Onboarding failed**\n\n` +
+                  `Could not retrieve organization membership for \`@${username}\` in \`${org}\`.\n` +
+                  `Error: \`${error.message}\``
+                );
+                core.setFailed(error.message);
+                return;
+              }
 
               membership = await github.rest.orgs.setMembershipForUser({
                 org,
