@@ -96,12 +96,22 @@ jobs:
                 return;
               }
 
-              membership = await github.rest.orgs.setMembershipForUser({
-                org,
-                username,
-              });
-
-              invited = true;
+              // User not found, attempt to invite
+              try {
+                membership = await github.rest.orgs.setMembershipForUser({
+                  org,
+                  username,
+                });
+                invited = true;
+              } catch (inviteError) {
+                await comment(
+                  `❌ **Onboarding failed**\n\n` +
+                  `Could not invite \`@${username}\` to organization \`${org}\`.\n` +
+                  `Error: \`${inviteError.message}\``
+                );
+                core.setFailed(inviteError.message);
+                return;
+              }
             }
 
             // ---- Team membership (non-fatal) ----
