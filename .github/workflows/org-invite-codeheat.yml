@@ -22,16 +22,6 @@ jobs:
       TEAM_SLUG: "codeheat"
 
     steps:
-      - name: Debug secret presence
-        env:
-          ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
-        run: |
-          if [ -z "${ORG_ADMIN_TOKEN}" ]; then
-            echo "❌ ORG_ADMIN_TOKEN is NOT available"
-            exit 1
-          else
-            echo "✅ ORG_ADMIN_TOKEN is available"
-          fi
 
       - name: Invite user to org and team
         uses: actions/github-script@v7
