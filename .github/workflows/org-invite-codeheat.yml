@@ -22,15 +22,12 @@ jobs:
       TEAM_SLUG: "codeheat"
 
     steps:
+
       - name: Invite user to org and team
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
           script: |
-            // Validate that the token is present
-            if (!github.token || github.token.trim() === "") {
-              throw new Error("ORG_ADMIN_TOKEN is missing or empty. Please set the required secret.");
-            }
             const org = process.env.ORG_NAME;
             const team_slug = process.env.TEAM_SLUG;
             const issue = context.payload.issue;
@@ -71,18 +68,40 @@ jobs:
 
             // ---- Org membership ----
             let membership;
+            let invited = false;
+
             try {
-              membership = await github.rest.orgs.setMembershipForUser({
+              membership = await github.rest.orgs.getMembershipForUser({
                 org,
-                username
+                username,
               });
-            } catch (err) {
-              await comment(
-                `❌ **Failed to invite @${username} to ${org}**\n\n` +
-                `Error: ${err.message}`
-              );
-              core.setFailed(err.message);
-              return;
+            } catch (error) {
+              if (error.status !== 404) {
+                await comment(
+                  `❌ **Onboarding failed**\n\n` +
+                  `Could not retrieve organization membership for \`@${username}\` in \`${org}\`.\n` +
+                  `Error: \`${error.message}\``
+                );
+                core.setFailed(error.message);
+                return;
+              }
+
+              // User not found, attempt to invite
+              try {
+                membership = await github.rest.orgs.setMembershipForUser({
+                  org,
+                  username,
+                });
+                invited = true;
+              } catch (inviteError) {
+                await comment(
+                  `❌ **Onboarding failed**\n\n` +
+                  `Could not invite \`@${username}\` to organization \`${org}\`.\n` +
+                  `Error: \`${inviteError.message}\``
+                );
+                core.setFailed(inviteError.message);
+                return;
+              }
             }
 
             // ---- Team membership (non-fatal) ----
@@ -99,15 +118,36 @@ jobs:
               );
             }
 
+            let orgStatusLine;
+
+            if (membership.data.state === 'pending') {
+              orgStatusLine = invited
+                ? `• Org invitation: **pending**\n`
+                : `• Org membership: **pending (invited earlier)**\n`;
+            } else {
+              orgStatusLine = `• Org membership: **active**\n`;
+            }
+
             const teamStatusLine = teamMembership
               ? `• Team membership: **${teamMembership.data.state}**\n`
               : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
 
+            let actionMessage = '';
+
+            if (membership.data.state === 'pending') {
+              actionMessage =
+                `\nℹ️ Please accept the GitHub organization invitation ` +
+                `from your notifications or email to complete onboarding.`;
+            } else {
+              actionMessage =
+                `\nℹ️ You are already an active member. No further action is required.`;
+            }
+
             await comment(
-              `✅ **Onboarding processed for @${username}**\n\n` +
-              `• Org membership: **${membership.data.state}**\n` +
+              `✅ **Onboarding request processed for @${username}**\n\n` +
+              orgStatusLine +
               teamStatusLine +
-              `\nIf any status is **pending**, please accept the GitHub invitation.`
+              actionMessage
             );
 
             // ---- Close issue (non-fatal) ----
