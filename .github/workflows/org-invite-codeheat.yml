@@ -118,9 +118,15 @@ jobs:
               );
             }
 
-            const orgStatusLine = invited
-              ? `• Org invitation: **${membership.data.state}**\n`
-              : `• Org membership: **already active**\n`;
+            let orgStatusLine;
+
+            if (membership.data.state === 'pending') {
+              orgStatusLine = invited
+                ? `• Org invitation: **pending**\n`
+                : `• Org membership: **pending (invited earlier)**\n`;
+            } else {
+              orgStatusLine = `• Org membership: **active**\n`;
+            }
 
             const teamStatusLine = teamMembership
               ? `• Team membership: **${teamMembership.data.state}**\n`
