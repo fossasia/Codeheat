@@ -8,8 +8,8 @@ Welcome to **Codeheat**! This guide explains how to join the **FOSSASIA GitHub o
 
 ### Step 1: Request to Join
 
-1. Open a new issue using the  
-   **“Join FOSSASIA and the Codeheat Team”** issue template.
+1. Open a new onboarding issue using this link:  
+   **[Join FOSSASIA and the Codeheat Team](https://github.com/fossasia/Codeheat/issues/new?template=join-codeheat.md)**
 2. Add a short introduction or reason for joining Codeheat.
 3. Submit the issue.
 
@@ -23,13 +23,15 @@ Once the issue is labeled:
   - Organization membership status
   - Codeheat team membership status
 
+**Typical processing time:** a few seconds to a minute.
+
 ### Step 3: Accept the Invitation (If Required)
 
 If your org membership status is **pending**:
 - Check your **GitHub notifications or email**
 - Accept the **FOSSASIA organization invitation**
 
-After accepting, your onboarding is complete
+After accepting the invitation, your onboarding is complete.
 
 ## Common Status Messages
 
@@ -41,6 +43,14 @@ After accepting, your onboarding is complete
 
 - **Team membership: pending / active**  
   Team access will be granted automatically after org membership is confirmed.
+
+## If Something Goes Wrong
+
+If you don’t see a response within a few minutes, or onboarding does not complete:
+
+- Make sure you’ve accepted the GitHub organization invitation
+- Comment on your onboarding issue requesting help
+- If needed, politely ping a maintainer for manual assistance
 
 ## Final Step
 
