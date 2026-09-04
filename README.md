@@ -1,67 +1,91 @@
-# Codeheat
+# FOSSASIA Members
 
-Join us for the Codeheat contest at https://codeheat.org
+Welcome to **FOSSASIA**! We are happy to welcome new contributors and community developers to our GitHub organization.
 
-## Codeheat Contributor Onboarding Guide
+Anyone can contribute to our public projects. Joining the organization makes ongoing collaboration easier and enables GitHub features such as assigning issues to contributors and adding members to project teams.
 
-Welcome to **Codeheat**! This guide explains how to join the **FOSSASIA GitHub organization** and get added to the **Codeheat team**.
+New members are also added to the **CodeHeat team**, allowing them to participate in future [CodeHeat](https://codeheat.org) contests.
+
+## Contributor Onboarding Guide
+
+Follow these steps to join the FOSSASIA GitHub organization and the CodeHeat team.
 
 ### Step 1: Request to Join
 
-1. Open a new onboarding issue using this link:  
-   **[Join FOSSASIA and the Codeheat Team](https://github.com/fossasia/Codeheat/issues/new?template=join-codeheat.md)**
-2. Add a short introduction or reason for joining Codeheat.
+1. Open a new onboarding issue:
+   **[Join FOSSASIA and the CodeHeat Team](https://github.com/fossasia/member/issues/new?template=join-codeheat.md)**
+2. Add a short introduction and tell us why you would like to join FOSSASIA.
 3. Submit the issue.
 
-> The issue will automatically receive the `org-invite` label.
+The issue will automatically receive the `org-invite` label.
 
 ### Step 2: Automated Processing
 
-Once the issue is labeled:
-- A GitHub Action will process your request
-- You’ll receive a comment showing your onboarding status:
-  - Organization membership status
-  - Codeheat team membership status
+Once the issue has been submitted:
 
-**Typical processing time:** a few seconds to a minute.
+* A GitHub Action will process your request.
+* You will receive a comment showing:
 
-### Step 3: Accept the Invitation (If Required)
+  * Your FOSSASIA organization membership status
+  * Your CodeHeat team membership status
+* The onboarding issue will be closed automatically after processing.
 
-If your org membership status is **pending**:
-- Check your **GitHub notifications or email**
-- Accept the **FOSSASIA organization invitation**
+Processing normally takes a few seconds.
 
-After accepting the invitation, your onboarding is complete.
+### Step 3: Accept the Invitation
 
-## Common Status Messages
+If your organization membership status is **pending**:
 
-- **Org membership: active**  
-  You’re already part of FOSSASIA — no action needed.
+1. Check your GitHub notifications or email.
+2. Open the invitation from the FOSSASIA GitHub organization.
+3. Accept the invitation.
+4. Continue with Step 4 to make your membership public.
 
-- **Org invitation: pending**  
-  Please accept the invitation to complete onboarding.
+You must accept the invitation before you can make your organization membership public.
 
-- **Team membership: pending / active**  
-  Team access will be granted automatically after org membership is confirmed.
+### Step 4: Make Your FOSSASIA Membership Public
+
+GitHub organization membership may be shown as private. Please make your FOSSASIA membership public so that the FOSSASIA organization appears on your GitHub profile and other community members can identify you as a member.
+
+1. Click your profile picture in the upper-right corner of GitHub.
+2. Select **Organizations**.
+3. Select **FOSSASIA**.
+4. Open the **People** section.
+5. Find your GitHub username in the list of members.
+6. Open the membership visibility menu next to your username.
+7. Change the visibility from **Private** to **Public**.
+
+You can also open the [FOSSASIA members page](https://github.com/orgs/fossasia/people) directly and change the visibility next to your username.
+
+For additional details, see GitHub’s guide to [publicizing or hiding organization membership](https://docs.github.com/en/account-and-profile/how-tos/organization-membership/publicizing-or-hiding-organization-membership).
+
+After making your membership public, the FOSSASIA organization will appear on your public GitHub profile and your onboarding is complete.
+
+## Understanding the Status Messages
+
+* **Organization membership: active**
+  You are already a member of the FOSSASIA GitHub organization. Continue with Step 4 and ensure that your membership is public.
+
+* **Organization invitation: pending**
+  GitHub has sent you an invitation. Please accept it to complete your organization membership.
+
+* **Team membership: pending or active**
+  You have been added to the CodeHeat team. The membership will become active after you accept the organization invitation.
+
+* **Team membership: failed**
+  A maintainer will need to add you to the CodeHeat team manually.
 
 ## If Something Goes Wrong
 
-If you don’t see a response within a few minutes, or onboarding does not complete:
+If you do not receive a response within a few minutes or cannot complete the onboarding:
 
-- Make sure you’ve accepted the GitHub organization invitation
-- Comment on your onboarding issue requesting help
-- If needed, politely ping a maintainer for manual assistance
+* Check whether you have accepted the FOSSASIA organization invitation.
+* Check your GitHub notifications and email.
+* Make sure you are listed on the [FOSSASIA members page](https://github.com/orgs/fossasia/people).
+* Comment on your onboarding issue and request assistance.
 
-## Final Step
+Welcome to the FOSSASIA community, and happy coding!
 
-Once processed, the onboarding issue will be **automatically closed**.
+## Repository Content
 
-If you face any issues, feel free to comment on your onboarding issue or contact a maintainer.
-
-Happy coding!
-
-# Archive
-
-### mbdyn tasks archive
-
-MBDyn tasks for Code-in. Look for your specific task in the given subfolders.
+This repository also contains materials from past FOSSASIA community activities and contests, including the MBDyn tasks archive. Feel free to browse the tasks and contribution history to learn more about previous projects and activities.
