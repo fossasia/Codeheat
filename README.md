@@ -1,19 +1,19 @@
 # FOSSASIA Members
 
-Welcome to **FOSSASIA**! We are happy to welcome new contributors and community developers to our GitHub organization.
+Welcome to **[FOSSASIA](https://fossasia.org)**! We are happy to welcome new contributors and community developers to our GitHub organization.
 
 Anyone can contribute to our public projects. Joining the organization makes ongoing collaboration easier and enables GitHub features such as assigning issues to contributors and adding members to project teams.
 
-New members are also added to the **CodeHeat team**, allowing them to participate in future [CodeHeat](https://codeheat.org) contests.
+New members are also added to the **Codeheat team**, allowing them to participate in future [Codeheat](https://codeheat.org) contests.
 
 ## Contributor Onboarding Guide
 
-Follow these steps to join the FOSSASIA GitHub organization and the CodeHeat team.
+Follow these steps to join the FOSSASIA GitHub organization and the Codeheat team.
 
 ### Step 1: Request to Join
 
 1. Open a new onboarding issue:
-   **[Join FOSSASIA and the CodeHeat Team](https://github.com/fossasia/member/issues/new?template=join-fossasia.md)**
+   **[Join FOSSASIA and the Codeheat Team](https://github.com/fossasia/member/issues/new?template=join-fossasia.md)**
 2. Add a short introduction and tell us why you would like to join FOSSASIA.
 3. Submit the issue.
 
@@ -27,7 +27,7 @@ Once the issue has been submitted:
 * You will receive a comment showing:
 
   * Your FOSSASIA organization membership status
-  * Your CodeHeat team membership status
+  * Your Codeheat team membership status
 * The onboarding issue will be closed automatically after processing.
 
 Processing normally takes a few seconds.
@@ -61,6 +61,20 @@ For additional details, see GitHub’s guide to [publicizing or hiding organizat
 
 After making your membership public, the FOSSASIA organization will appear on your public GitHub profile and your onboarding is complete.
 
+### Step 5: Follow FOSSASIA and Connect with Our Projects
+
+Follow FOSSASIA and star our repositories to discover project updates and contribution opportunities through your GitHub home feed.
+
+1. Open the [FOSSASIA GitHub organization page](https://github.com/fossasia).
+2. Click **Follow** near the top of the page.
+3. Open the [FOSSASIA StarMe repository](https://github.com/fossasia/star-me).
+4. Follow the instructions in its README to run the StarMe script while signed in to GitHub.
+
+Following the organization and starring its repositories helps GitHub surface relevant FOSSASIA activity in your personalized home feed.
+
+Your onboarding is now complete. Welcome to the FOSSASIA community, and happy coding!
+
+
 ## Understanding the Status Messages
 
 * **Organization membership: active**
@@ -70,10 +84,10 @@ After making your membership public, the FOSSASIA organization will appear on yo
   GitHub has sent you an invitation. Please accept it to complete your organization membership.
 
 * **Team membership: pending or active**
-  You have been added to the CodeHeat team. The membership will become active after you accept the organization invitation.
+  You have been added to the Codeheat team. The membership will become active after you accept the organization invitation.
 
 * **Team membership: failed**
-  A maintainer will need to add you to the CodeHeat team manually.
+  A maintainer will need to add you to the Codeheat team manually.
 
 ## If Something Goes Wrong
 
