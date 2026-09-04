@@ -8,7 +8,7 @@ New members are also added to the **Codeheat team**, allowing them to participat
 
 ## Contributor Onboarding Guide
 
-Follow these steps to join the FOSSASIA GitHub organization and the Codeheat team.
+Follow these steps to join the FOSSASIA GitHub organization.
 
 ### Step 1: Request to Join
 
