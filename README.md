@@ -13,7 +13,7 @@ Follow these steps to join the FOSSASIA GitHub organization and the CodeHeat tea
 ### Step 1: Request to Join
 
 1. Open a new onboarding issue:
-   **[Join FOSSASIA and the CodeHeat Team](https://github.com/fossasia/member/issues/new?template=join-codeheat.md)**
+   **[Join FOSSASIA and the CodeHeat Team](https://github.com/fossasia/member/issues/new?template=join-fossasia.md)**
 2. Add a short introduction and tell us why you would like to join FOSSASIA.
 3. Submit the issue.
 

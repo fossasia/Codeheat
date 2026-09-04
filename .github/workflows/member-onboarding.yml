@@ -1,4 +1,4 @@
-name: "Org invite & team add — Codeheat"
+name: "FOSSASIA member onboarding"
 
 on:
   issues:
@@ -8,14 +8,15 @@ permissions:
   issues: write
 
 jobs:
-  invite-and-add:
-    # Do not run on forks + ensure label exists
+  onboard-member:
+    # Run only in the canonical membership repository when the trigger label is applied
     if: |
-      github.repository_owner == 'FOSSASIA' &&
+      github.repository == 'fossasia/member' &&
       github.event.action == 'labeled' &&
       github.event.label.name == 'org-invite'
 
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     env:
       ORG_NAME: "FOSSASIA"
@@ -23,7 +24,7 @@ jobs:
 
     steps:
 
-      - name: Invite user to org and team
+      - name: Invite member and add to CodeHeat team
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_ADMIN_TOKEN }}
@@ -122,26 +123,31 @@ jobs:
 
             if (membership.data.state === 'pending') {
               orgStatusLine = invited
-                ? `• Org invitation: **pending**\n`
-                : `• Org membership: **pending (invited earlier)**\n`;
+                ? `• Organization invitation: **pending**\n`
+                : `• Organization membership: **pending (invited earlier)**\n`;
             } else {
-              orgStatusLine = `• Org membership: **active**\n`;
+              orgStatusLine = `• Organization membership: **active**\n`;
             }
 
             const teamStatusLine = teamMembership
-              ? `• Team membership: **${teamMembership.data.state}**\n`
-              : `• Team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
+              ? `• CodeHeat team membership: **${teamMembership.data.state}**\n`
+              : `• CodeHeat team membership: ❌ **failed** - please add manually to \`${team_slug}\`\n`;
 
             let actionMessage = '';
 
             if (membership.data.state === 'pending') {
               actionMessage =
                 `\nℹ️ Please accept the GitHub organization invitation ` +
-                `from your notifications or email to complete onboarding.`;
+                `from your notifications or email.`;
             } else {
               actionMessage =
-                `\nℹ️ You are already an active member. No further action is required.`;
+                `\nℹ️ You are already an active member of the FOSSASIA organization.`;
             }
+
+            actionMessage +=
+              `\n\n📣 **Final step:** Make your FOSSASIA membership public on the ` +
+              `[FOSSASIA members page](https://github.com/orgs/fossasia/people) ` +
+              `so the organization appears on your GitHub profile.`;
 
             await comment(
               `✅ **Onboarding request processed for @${username}**\n\n` +
