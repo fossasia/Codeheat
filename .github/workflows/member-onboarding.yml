@@ -145,9 +145,15 @@ jobs:
             }
 
             actionMessage +=
-              `\n\n📣 **Final step:** Make your FOSSASIA membership public on the ` +
+              `\n\n📣 **Complete your membership setup:** Make your FOSSASIA membership public on the ` +
               `[FOSSASIA members page](https://github.com/orgs/fossasia/people) ` +
-              `so the organization appears on your GitHub profile.`;
+              `so the organization appears on your GitHub profile.\n\n` +
+              `🚀 **Continue your contributor onboarding:**\n` +
+              `1. [Follow the FOSSASIA GitHub organization](https://github.com/fossasia) ` +
+              `on its organization page.\n` +
+              `2. [Run the FOSSASIA StarMe script](https://github.com/fossasia/star-me) ` +
+              `to connect with FOSSASIA projects and help surface relevant project activity ` +
+              `in your GitHub home feed.`;
 
             await comment(
               `✅ **Onboarding request processed for @${username}**\n\n` +
